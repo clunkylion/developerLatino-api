@@ -1,24 +1,33 @@
-const { videosMock } = require('../utils/mocks/videos');
-
+//const { videosMock } = require('../utils/mocks/videos');
+const MongoLib = require('../lib/mongo');
+//const { query } = require('express');
 class VideosService {
-  async getVideos() {
-    const videos = await Promise.resolve(videosMock);
+  constructor() {
+    (this.collection = 'videos'), (this.mongoDB = new MongoLib());
+  }
+  async getVideos({ tags }) {
+    const query = tags && { tags: { $in: tags } };
+    const videos = await this.mongoDB.getAll(this.collection, query);
     return videos || [];
   }
-  async getVideo() {
-    const videos = await Promise.resolve(videosMock[0]);
+  async getVideo({ videoId }) {
+    const videos = await this.mongoDB.get(this.collection, videoId);
     return videos || {};
   }
-  async createVideo() {
-    const createVideoId = await Promise.resolve(videosMock[0].id);
-    return createVideoId || {};
+  async createVideo({ video }) {
+    const createVideoId = await this.mongoDB.create(this.collection, video);
+    return createVideoId;
   }
-  async updateVideo() {
-    const updateVideoId = await Promise.resolve(videosMock[0].id);
+  async updateVideo({ videoId, video } = {}) {
+    const updateVideoId = await this.mongoDB.update(
+      this.collection,
+      videoId,
+      video
+    );
     return updateVideoId;
   }
-  async deleteVideo() {
-    const deleteVideoId = await Promise.resolve(videosMock[0].id);
+  async deleteVideo({ videoId }) {
+    const deleteVideoId = await this.mongoDB.delete(this.collection, videoId);
     return deleteVideoId;
   }
 }
