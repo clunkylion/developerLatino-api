@@ -22,6 +22,4 @@ class VideosService {
     return deleteVideoId;
   }
 }
-module.exports = {
-  VideosService,
-};
+module.exports = VideosService;
