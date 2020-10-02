@@ -7,13 +7,20 @@ const {
   updateMovieSchema,
 } = require('../utils/schemas/movies');
 const validationHandler = require('../utils/middleware/validationHandler');
+const cacheResponse = require('../utils/cacheResponse');
+const {
+  FIVE_MINUTES_IN_SECONDS,
+  SIXTY_MINUTES_IN_SECONDS,
+} = require('../utils/time');
 
 const videosApi = (app) => {
   const router = express.Router();
   const videoService = new VideoService();
   app.use('/api/videos', router);
+
   router.get('/', async function (req, res, next) {
     //obtengo videos segun las tag que serán enviadas en la url
+    cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
     const { tags } = req.query;
 
     try {
@@ -30,6 +37,7 @@ const videosApi = (app) => {
     '/:videoId',
     validationHandler({ movieId: movieIdSchema }, 'params'),
     async function (req, res, next) {
+      cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
       const { videoId } = req.params;
       try {
         const videos = await videoService.getVideo({ videoId });

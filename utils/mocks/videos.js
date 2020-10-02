@@ -152,7 +152,19 @@ const videosMock = [
     tags: ['Action|Adventure|Comedy|Drama|War', 'Animation', 'Drama'],
   },
 ];
-
+const filteredVideoMock = (tag) => {
+  return videosMock.filter((video) => video.tags.includes(tag));
+};
+class VideoServiceMock {
+  async getVideos() {
+    return Promise.resolve(videosMock);
+  }
+  async createVideo() {
+    return Promise.resolve(videosMock[0]);
+  }
+}
 module.exports = {
   videosMock,
+  filteredVideoMock,
+  VideoServiceMock,
 };
